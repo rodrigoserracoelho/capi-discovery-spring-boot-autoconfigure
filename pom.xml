@@ -7,8 +7,6 @@
     <artifactId>capi-discovery-spring-boot-autoconfigure</artifactId>
     <version>0.0.1</version>
     <name>capi-discovery-spring-boot-autoconfigure</name>
-
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -57,5 +55,13 @@
         <spring-boot.version>2.5.4</spring-boot.version>
         <lombok.version>1.18.2</lombok.version>
     </properties>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>Github Repository CAPI</name>
+            <url>https://maven.pkg.github.com/rodrigoserracoelho/capi-discovery-spring-boot-autoconfigure</url>
+        </repository>
+    </distributionManagement>
 
 </project>
