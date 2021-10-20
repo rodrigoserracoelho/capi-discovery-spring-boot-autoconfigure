@@ -9,4 +9,6 @@ public class CapiDiscoveryProperties {
    private String host;
    private int port;
    private String context;
+   private String capiHost;
+   private boolean stopOnFailing;
 }
