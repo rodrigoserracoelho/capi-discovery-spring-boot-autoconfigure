@@ -8,7 +8,35 @@ import org.springframework.web.client.RestTemplate;
 
 public class CapiRegister {
 
-    public void register(String capiHost, String name, String hostName, int port, String context) throws CapiDiscoveryException {
+    public void register(String capiHost, String name, String hostName, int port, String context, boolean isFailover) throws CapiDiscoveryException {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            CapiApi capiApi = new CapiApi();
+
+            Mapping mapping = new Mapping();
+            mapping.setHostname(hostName);
+            mapping.setPort(port);
+            mapping.setRootContext(context);
+
+            capiApi.addToMapping(mapping);
+            capiApi.setName(name);
+            capiApi.setContext(context);
+            capiApi.setProtocol("HTTP");
+            capiApi.setFailoverEnabled(isFailover);
+
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+            HttpEntity<CapiApi> httpEntity = new HttpEntity<>(capiApi, httpHeaders);
+
+            ResponseEntity<CapiApi> responseCapiApi = restTemplate.postForEntity(capiHost, httpEntity, CapiApi.class);
+
+        } catch(Exception e) {
+            throw new CapiDiscoveryException("Could not register this node on CAPI Load Balancer.");
+        }
+    }
+
+    public void unregister(String capiHost, String name, String hostName, int port, String context) throws CapiDiscoveryException {
         try {
             RestTemplate restTemplate = new RestTemplate();
             CapiApi capiApi = new CapiApi();
@@ -28,10 +56,12 @@ public class CapiRegister {
 
             HttpEntity<CapiApi> httpEntity = new HttpEntity<>(capiApi, httpHeaders);
 
-            ResponseEntity<CapiApi> responseCapiApi = restTemplate.postForEntity(capiHost, httpEntity, CapiApi.class);
+            restTemplate.delete(capiHost, httpEntity, CapiApi.class);
 
         } catch(Exception e) {
             throw new CapiDiscoveryException("Could not register this node on CAPI Load Balancer.");
         }
     }
+
+
 }

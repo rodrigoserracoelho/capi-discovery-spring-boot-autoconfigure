@@ -26,13 +26,15 @@ public class CapiDiscoveryApplicationListener implements ApplicationListener<App
             log.info(capiDiscoveryProperties.getCapiHost());
             log.info(capiDiscoveryProperties.getContext());
             log.info(capiDiscoveryProperties.getHost());
+            log.info(capiDiscoveryProperties.isFailover()+"");
 
             CapiRegister capiRegister = new CapiRegister();
             try {
                 capiRegister.register(capiDiscoveryProperties.getCapiHost(),
-                        "smk-api", capiDiscoveryProperties.getHost(),
+                        capiDiscoveryProperties.getName(), capiDiscoveryProperties.getHost(),
                         capiDiscoveryProperties.getPort(),
-                        capiDiscoveryProperties.getContext());
+                        capiDiscoveryProperties.getContext(),
+                        capiDiscoveryProperties.isFailover());
             } catch (CapiDiscoveryException e) {
                 if(capiDiscoveryProperties.isStopOnFailing()) {
                     ((ApplicationReadyEvent) applicationEvent).getApplicationContext().close();
@@ -43,6 +45,15 @@ public class CapiDiscoveryApplicationListener implements ApplicationListener<App
 
         } else if(applicationEvent instanceof ContextClosedEvent) {
             log.info("Application Stopped, removing service from load balancer");
+            CapiRegister capiRegister = new CapiRegister();
+            try {
+                capiRegister.unregister(capiDiscoveryProperties.getCapiHost(),
+                        capiDiscoveryProperties.getName(), capiDiscoveryProperties.getHost(),
+                        capiDiscoveryProperties.getPort(),
+                        capiDiscoveryProperties.getContext());
+            } catch(CapiDiscoveryException e) {
+                log.warn(e.getMessage());
+            }
         }
     }
 }

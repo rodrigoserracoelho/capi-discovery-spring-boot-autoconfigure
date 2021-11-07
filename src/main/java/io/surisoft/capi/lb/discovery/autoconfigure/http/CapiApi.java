@@ -8,6 +8,8 @@ public class CapiApi {
     private String context;
     private String protocol;
     private List<Mapping> mappingList = new ArrayList<>();
+    private boolean removeMe;
+    private boolean failoverEnabled;
 
     public String getName() {
         return name;
@@ -43,5 +45,21 @@ public class CapiApi {
 
     public void addToMapping(Mapping mapping) {
         this.mappingList.add(mapping);
+    }
+
+    public boolean isRemoveMe() {
+        return removeMe;
+    }
+
+    public void setRemoveMe(boolean removeMe) {
+        this.removeMe = removeMe;
+    }
+
+    public boolean isFailoverEnabled() {
+        return failoverEnabled;
+    }
+
+    public void setFailoverEnabled(boolean failoverEnabled) {
+        this.failoverEnabled = failoverEnabled;
     }
 }
